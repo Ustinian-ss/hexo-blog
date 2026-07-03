@@ -1,7 +1,59 @@
 <% if (expand){ %>
-  <% page.posts.each(function(post){ %>
-    <%- partial('article', {post: post, index: true}) %>
-  <% }) %>
+  <section class="home-shell">
+    <div class="home-main">
+      <div class="home-intro card-panel">
+        <div class="home-intro__copy">
+          <p class="section-kicker">Latest notes</p>
+          <h2 class="home-intro__title">Jingtaiblog</h2>
+          <p class="home-intro__desc">A clean static blog for long-form technical notes, future updates, and archived writeups.</p>
+        </div>
+        <div class="home-stats">
+          <div class="stat-pill"><strong><%= site.posts.length %></strong><span>Posts</span></div>
+          <div class="stat-pill"><strong><%= site.categories.length %></strong><span>Categories</span></div>
+          <div class="stat-pill"><strong><%= site.tags.length %></strong><span>Tags</span></div>
+        </div>
+      </div>
+
+      <div class="post-stream">
+        <% page.posts.each(function(post){ %>
+          <%- partial('article', {post: post, index: true}) %>
+        <% }) %>
+      </div>
+    </div>
+
+    <aside class="home-sidebar">
+      <div class="card-panel profile-card">
+        <div class="profile-card__avatar">U</div>
+        <div>
+          <h3><%= config.author %></h3>
+          <p><%= config.subtitle || theme.subtitle || '' %></p>
+        </div>
+      </div>
+
+      <div class="card-panel side-card">
+        <p class="section-kicker">About</p>
+        <p>Static blog powered by Hexo. More posts, docs, and project notes will be added here.</p>
+      </div>
+
+      <div class="card-panel side-card">
+        <p class="section-kicker">Archive</p>
+        <ul class="compact-list">
+          <% page.posts.each(function(post){ %>
+            <li><a href="<%- url_for(post.path) %>"><%= post.title %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <div class="card-panel side-card">
+        <p class="section-kicker">Quick Links</p>
+        <div class="tag-cloud-lite">
+          <a href="<%- url_for('archives') %>">Archives</a>
+          <a href="<%- url_for('categories') %>">Categories</a>
+          <a href="<%- url_for('tags') %>">Tags</a>
+        </div>
+      </div>
+    </aside>
+  </section>
 <% } else { %>
   <% var last; %>
   <% page.posts.each(function(post, i){ %>
