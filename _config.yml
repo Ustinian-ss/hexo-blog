@@ -4,9 +4,9 @@
 
 # Site
 title: Jingtaiblog
-subtitle: Static blog powered by Hexo
-description: Jingtaiblog - a static blog built with Hexo
-keywords:
+subtitle: Notes &amp; Writeups
+description: Jingtaiblog — personal notes, technical writeups, and curated recommendations.
+keywords: blog,notes,tech,writeups
 author: Ustinian-ss
 language: zh-CN
 timezone: ''
@@ -45,12 +45,14 @@ relative_link: false
 future: true
 syntax_highlighter: highlight.js
 highlight:
+  enable: true
   line_number: true
   auto_detect: false
   tab_replace: ''
   wrap: true
   hljs: false
 prismjs:
+  enable: false
   preprocess: true
   line_number: true
   tab_replace: ''

@@ -12,6 +12,10 @@
         <% for (var i in theme.menu){ %>
           <a class="main-nav-link" href="<%- url_for(theme.menu[i]) %>"><%= i %></a>
         <% } %>
+        <button class="theme-toggle" onclick="var h=document.documentElement;var t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);localStorage.setItem('theme',t)" title="Toggle theme">
+          <span class="fa fa-moon-o"></span>
+          <span class="fa fa-sun-o"></span>
+        </button>
       </nav>
     </div>
   </div>

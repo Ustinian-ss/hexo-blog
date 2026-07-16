@@ -1,5 +1,10 @@
 <head>
   <meta charset="utf-8">
+  <script>
+    (function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}})()
+  </script>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="<%= config.description %>">
   <%- partial('google-analytics') %>
   <%
   var title = page.title;

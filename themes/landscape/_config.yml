@@ -10,12 +10,12 @@ rss: /atom.xml
 # Path of title banner image of page top
 banner: "images/banner.jpg"
 # Subtitle of page top
-subtitle:
+subtitle: Notes &amp; Writeups
 # Header links with icon, specified links will appear at the top right corner of the page
 # Each name must correspond to the icon name of Fork Awesome
 # https://forkaweso.me/Fork-Awesome/icons/
 links:
-#  github: https://github.com/your_github_account
+  github: https://github.com/Ustinian-ss
 #  twitter: https://twitter.com/your_twitter_account
 #  telegram: https://t.me/your_telegram_account
 
@@ -41,7 +41,7 @@ copyright:
 # Sidebar
 # ===============
 # Sidebar style. You can choose `left`, `right`, `bottom` or `false`.
-sidebar: right
+sidebar: false
 # Widgets displaying in sidebar
 widgets:
 - category
@@ -65,7 +65,7 @@ recent_posts_limits: 5
 google_analytics:
 gauges_analytics:
 # Favicon path
-favicon: /favicon.png
+favicon: /css/images/banner.jpg
 # Twitter ID
 twitter:
 fb_admins:
