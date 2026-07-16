@@ -1,9 +1,19 @@
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script>
-    (function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}})()
+    (function(){
+      var t=localStorage.getItem('theme');
+      var d=document.documentElement;
+      if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+        d.setAttribute('data-theme','dark');
+        try{document.querySelector('meta[name="theme-color"]').setAttribute('content','#0b1120')}catch(e){}
+      }else{
+        try{document.querySelector('meta[name="theme-color"]').setAttribute('content','#f8f7f4')}catch(e){}
+      }
+    })()
   </script>
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#f8f7f4">
   <meta name="description" content="<%= config.description %>">
   <%- partial('google-analytics') %>
   <%
@@ -41,5 +51,23 @@
   <% if (theme.fancybox){ %>
     <%- css('fancybox/jquery.fancybox.min.css') %>
   <% } %>
-  <%- css('https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css') %>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+  <style id="loading-style">
+    #loading-box{position:fixed;z-index:99999;inset:0;display:flex;align-items:center;justify-content:center}
+    #loading-box .loading-left-bg,#loading-box .loading-right-bg{position:fixed;top:0;width:50%;height:100%;background:var(--bg);z-index:99998;transition:transform .6s ease-in-out}
+    #loading-box .loading-left-bg{left:0}
+    #loading-box .loading-right-bg{right:0}
+    #loading-box.loaded .loading-left-bg{transform:translateX(-100%)}
+    #loading-box.loaded .loading-right-bg{transform:translateX(100%)}
+    .spinner-box{display:flex;flex-direction:column;align-items:center;gap:18px;z-index:99999}
+    .configure-core{width:100%;height:100%;background:var(--accent);border-radius:50%}
+    .configure-border-1{width:44px;height:44px;padding:3px;border:3px solid transparent;border-top-color:var(--accent);border-bottom-color:var(--accent);border-radius:50%;animation:spin-clockwise 1.2s linear infinite}
+    .configure-border-2{width:44px;height:44px;padding:3px;left:-44px;border:3px solid transparent;border-left-color:var(--accent-hover);border-right-color:var(--accent-hover);border-radius:50%;animation:spin-anticlockwise .8s linear infinite}
+    @keyframes spin-clockwise{to{transform:rotate(360deg)}}
+    @keyframes spin-anticlockwise{to{transform:rotate(-360deg)}}
+    .loading-word{color:var(--text-secondary);font-size:14px;font-weight:600;letter-spacing:.08em}
+    #progress-bar{position:fixed;top:0;left:0;z-index:9999;width:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-hover));transition:width .12s ease-out,opacity .3s ease;opacity:0}
+    #progress-bar.visible{opacity:1}
+  </style>
 </head>

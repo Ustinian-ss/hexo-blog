@@ -1,5 +1,11 @@
 <nav id="mobile-nav">
+  <div class="mobile-nav-header">
+    <span class="mobile-nav-title"><%= config.title %></span>
+  </div>
   <% for (var i in theme.menu){ %>
-    <a href="<%- url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
+    <a href="<%- url_for(theme.menu[i]) %>" class="mobile-nav-link">
+      <i class="fas fa-<%= i === 'Home' ? 'home' : i === 'Archives' ? 'archive' : 'circle' %>"></i>
+      <span><%= i %></span>
+    </a>
   <% } %>
 </nav>

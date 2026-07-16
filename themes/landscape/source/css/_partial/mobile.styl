@@ -5,15 +5,37 @@
     left: 0
     width: mobile-nav-width
     height: 100%
-    background: color-mobile-nav-background
-    border-right: 1px solid #fff
+    background: var(--bg-surface)
+    border-right: 1px solid var(--border)
+    box-shadow: var(--shadow-lg)
+    z-index: 100
+
+.mobile-nav-header
+  padding: 24px 20px 16px
+  border-bottom: 1px solid var(--border)
+
+.mobile-nav-title
+  font-size: 20px
+  font-weight: 800
+  color: var(--text-primary)
 
 @media mq-mobile
   .mobile-nav-link
     display: block
-    color: color-grey
+    color: var(--text-secondary)
     text-decoration: none
-    padding: 15px 20px
-    font-weight: bold
+    padding: 14px 20px
+    font-weight: 600
+    font-size: 15px
+    display: flex
+    align-items: center
+    gap: 12px
+    border-bottom: 1px solid var(--border-light)
+    transition: all var(--transition-fast)
+    i
+      width: 20px
+      text-align: center
+      font-size: 16px
     &:hover
-      color: #fff
+      color: var(--accent)
+      background: var(--accent-bg)

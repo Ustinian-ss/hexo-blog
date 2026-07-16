@@ -12,6 +12,132 @@
   })();
 </script>
 <% } %>
+<div id="rightside">
+  <div id="rightside-inner">
+    <button id="darkmode-toggle" class="rightside-btn" title="切换深色/浅色模式" onclick="var h=document.documentElement;var t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);localStorage.setItem('theme',t);var m=document.querySelector('meta[name=\"theme-color\"]');if(m)m.setAttribute('content',t==='dark'?'#0b1120':'#f8f7f4')">
+      <i class="fas fa-adjust"></i>
+    </button>
+    <button id="go-up" class="rightside-btn" title="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"></div>
+<script>
+  (function(){
+    var bar=document.getElementById('progress-bar');
+    var ticking=false;
+    window.addEventListener('scroll',function(){
+      if(!ticking){requestAnimationFrame(function(){
+        var st=document.documentElement.scrollTop||document.body.scrollTop;
+        var sh=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+        if(sh>0){var pct=Math.min((st/sh)*100,100);bar.style.width=pct+'%';bar.classList.add('visible')}
+        else{bar.classList.remove('visible')}
+        ticking=false
+      });ticking=true}
+    },{passive:true})
+  })()
+</script>
+<script>
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      document.getElementById('loading-box').classList.add('loaded');
+      setTimeout(function(){var lb=document.getElementById('loading-box');if(lb)lb.remove()},700)
+    },400)
+  })
+</script>
+<div id="search-mask"></div>
+<div id="search-dialog">
+  <div class="search-dialog-inner">
+    <div class="search-header">
+      <span class="search-title"><i class="fas fa-search"></i> 搜索文章</span>
+      <button class="search-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-input-wrap">
+      <input type="text" class="search-input" placeholder="输入关键词搜索...">
+    </div>
+    <div class="search-results"></div>
+    <div class="search-empty">未找到相关内容</div>
+  </div>
+</div>
+<script>
+  (function(){
+    var searchData=null;
+    var mask=document.getElementById('search-mask');
+    var dialog=document.getElementById('search-dialog');
+    var input=dialog.querySelector('.search-input');
+    var results=dialog.querySelector('.search-results');
+    var empty=dialog.querySelector('.search-empty');
+    var closeBtn=dialog.querySelector('.search-close');
+    function openSearch(){
+      mask.classList.add('active');
+      dialog.classList.add('active');
+      document.body.style.overflow='hidden';
+      if(!searchData){
+        fetch('/search.xml').then(function(r){return r.text()}).then(function(xml){
+          var parser=new DOMParser();
+          var doc=parser.parseFromString(xml,'text/xml');
+          var entries=doc.querySelectorAll('entry');
+          searchData=[];
+          entries.forEach(function(e){
+            searchData.push({
+              title:e.querySelector('title').textContent,
+              url:e.querySelector('url').textContent,
+              content:(e.querySelector('content').textContent||'').replace(/<[^>]+>/g,'').substring(0,300)
+            })
+          })
+        }).catch(function(){searchData=[]})
+      }
+      setTimeout(function(){input.focus()},100)
+    }
+    function closeSearch(){
+      mask.classList.remove('active');
+      dialog.classList.remove('active');
+      document.body.style.overflow='';
+      input.value='';
+      results.innerHTML='';
+      empty.style.display='none'
+    }
+    function doSearch(q){
+      if(!searchData||!q.trim()){results.innerHTML='';empty.style.display='none';return}
+      var kw=q.trim().toLowerCase();
+      var hits=searchData.filter(function(item){
+        return item.title.toLowerCase().indexOf(kw)>-1||item.content.toLowerCase().indexOf(kw)>-1
+      });
+      if(hits.length===0){results.innerHTML='';empty.style.display='block';return}
+      empty.style.display='none';
+      results.innerHTML=hits.map(function(item){
+        return '<a class=\"search-result-item\" href=\"'+item.url+'\"><strong>'+item.title+'</strong><p>'+item.content.substring(0,120)+'...</p></a>'
+      }).join('')
+    }
+    document.querySelector('.nav-search-btn').addEventListener('click',function(e){e.preventDefault();openSearch()});
+    mask.addEventListener('click',closeSearch);
+    closeBtn.addEventListener('click',closeSearch);
+    input.addEventListener('input',function(){doSearch(this.value)});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSearch()})
+  })()
+</script>
+<script>
+  (function(){
+    document.querySelectorAll('.article-entry pre').forEach(function(pre){
+      var btn=document.createElement('button');
+      btn.className='code-copy-btn';
+      btn.innerHTML='<i class="fas fa-copy"></i> 复制';
+      btn.addEventListener('click',function(){
+        var code=pre.querySelector('code')||pre;
+        navigator.clipboard.writeText(code.textContent).then(function(){
+          btn.innerHTML='<i class="fas fa-check"></i> 已复制';
+          btn.style.background='rgba(34,197,94,.2)';
+          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> 复制';btn.style.background=''},2000)
+        }).catch(function(){
+          btn.innerHTML='<i class="fas fa-times"></i> 失败';
+          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> 复制'},2000)
+        })
+      });
+      pre.appendChild(btn)
+    })
+  })()
+</script>
 
 <%- js('js/jquery-3.6.4.min.js') %>
 

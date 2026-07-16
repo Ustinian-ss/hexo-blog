@@ -1,6 +1,24 @@
 <footer id="footer">
-  <div class="footer-inner">
-    <p>&copy; <%= date(new Date(), 'YYYY') %> <%= config.author %> &middot; Powered by <a href="https://hexo.io">Hexo</a></p>
-    <p class="footer-note">Built for future posts and updates.</p>
+  <div id="footer-wrap">
+    <div class="footer-left">
+      <div class="footer-brand">
+        <span class="footer-logo"><%= config.title %></span>
+        <p class="footer-desc"><%= config.description %></p>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-links">
+        <a href="/"><i class="fas fa-home"></i> 首页</a>
+        <a href="/archives"><i class="fas fa-archive"></i> 归档</a>
+        <% if (theme.links) { %>
+          <% for (const i in theme.links) {%>
+            <a href="<%- url_for(theme.links[i]) %>" target="_blank" rel="noopener"><i class="fab fa-<%= i %>"></i> <%= i.charAt(0).toUpperCase()+i.slice(1) %></a>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <%= date(new Date(), 'YYYY') %> <%= config.author %> &middot; Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> &amp; <span>Landscape</span></p>
   </div>
 </footer>

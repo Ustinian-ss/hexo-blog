@@ -1,4 +1,38 @@
 <aside id="sidebar"<% if (theme.sidebar === 'bottom'){ %> class="outer"<% } %>>
+  <div class="widget-wrap">
+    <div class="widget card-profile">
+      <div class="profile-avatar">
+        <div class="avatar-placeholder">
+          <i class="fas fa-user-astronaut"></i>
+        </div>
+      </div>
+      <div class="profile-name"><%= config.author %></div>
+      <div class="profile-desc"><%= config.description %></div>
+      <div class="profile-stats">
+        <a href="/archives" class="profile-stat">
+          <strong><%= site.posts.length %></strong>
+          <span>文章</span>
+        </a>
+        <a href="/tags" class="profile-stat">
+          <strong><%= site.tags.length %></strong>
+          <span>标签</span>
+        </a>
+        <a href="/categories" class="profile-stat">
+          <strong><%= site.categories.length %></strong>
+          <span>分类</span>
+        </a>
+      </div>
+      <% if (theme.links) { %>
+        <div class="profile-social">
+          <% for (const i in theme.links) {%>
+            <a class="profile-social-icon" href="<%- url_for(theme.links[i]) %>" target="_blank" rel="noopener" title="<%= i %>">
+              <i class="fab fa-<%= i %>"></i>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
   <% theme.widgets.forEach(function(widget){ %>
     <%- partial('_widget/' + widget) %>
   <% }) %>

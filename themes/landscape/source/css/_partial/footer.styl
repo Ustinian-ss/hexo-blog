@@ -1,14 +1,71 @@
 #footer
-  background: color-footer-background
-  padding: 50px 0
-  border-top: 1px solid color-border
-  color: color-grey
+  margin-top: 72px
+  padding: 44px 0 60px
+  background: var(--footer-bg)
+  color: var(--footer-fg)
+  transition: background var(--transition-slow)
   a
-    color: color-link
+    color: #fff
     text-decoration: none
+    transition: opacity var(--transition-fast)
     &:hover
-      text-decoration: underline
+      opacity: .8
 
-#footer-info
-  line-height: line-height
-  font-size: 0.85em
+#footer-wrap
+  max-width: 1100px
+  margin: 0 auto
+  padding: 0 24px
+  display: flex
+  justify-content: space-between
+  align-items: flex-start
+  gap: 40px
+  flex-wrap: wrap
+
+.footer-left
+  max-width: 380px
+
+.footer-logo
+  font-size: 20px
+  font-weight: 800
+  color: #fff
+
+.footer-desc
+  margin: 8px 0 0
+  opacity: .7
+  font-size: 14px
+  line-height: 1.6
+
+.footer-right
+  display: flex
+  gap: 16px
+  flex-wrap: wrap
+
+.footer-links
+  display: flex
+  flex-wrap: wrap
+  gap: 12px
+  a
+    display: inline-flex
+    align-items: center
+    gap: 6px
+    padding: 8px 16px
+    border-radius: var(--radius-full)
+    background: rgba(255,255,255,.1)
+    color: #fff
+    font-size: 14px
+    text-decoration: none
+    transition: all var(--transition-fast)
+    &:hover
+      background: rgba(255,255,255,.2)
+      opacity: 1
+
+.footer-bottom
+  max-width: 1100px
+  margin: 32px auto 0
+  padding: 20px 24px 0
+  border-top: 1px solid rgba(255,255,255,.12)
+  text-align: center
+  font-size: 13px
+  opacity: .65
+  a
+    color: #fff
