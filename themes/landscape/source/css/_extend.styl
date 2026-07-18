@@ -465,10 +465,15 @@ body
 #starfield
   position: fixed
   inset: 0
-  z-index: 0
+  z-index: 998
   pointer-events: none
   width: 100%
   height: 100%
+  opacity: .9
+  mix-blend-mode: normal
+
+[data-theme="dark"] #starfield
+  mix-blend-mode: screen
 
 // ============================================================
 // Profile card (original home-shell)

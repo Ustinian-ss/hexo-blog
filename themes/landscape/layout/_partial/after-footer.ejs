@@ -144,50 +144,120 @@
 (function(){
   var canvas = document.getElementById('starfield');
   if(!canvas)return;
-  var ctx=canvas.getContext('2d');
-  var W,H,particles=[],mouse={x:null,y:null,active:false};
-  var PARTICLE_COUNT=80,MAX_DIST=180,GRAVITY=.03,FRICTION=.96;
-  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
-  function random(min,max){return Math.random()*(max-min)+min}
-  function isDark(){return document.documentElement.getAttribute('data-theme')==='dark'}
-  function particleColor(){
-    var dark=isDark();
-    var colors=dark?['rgba(129,140,248,','rgba(167,139,250,','rgba(99,102,241,']:['rgba(79,70,229,','rgba(99,102,241,','rgba(139,92,246,'];
-    return colors[Math.floor(Math.random()*colors.length)]
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ctx = canvas.getContext('2d');
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var W=0,H=0,particles=[],mouse={x:-9999,y:-9999,active:false};
+  var LINK_DIST=120,MOUSE_DIST=200,GRAV=0.045,FR=0.94;
+  function size(){
+    W=window.innerWidth;H=window.innerHeight;
+    canvas.width=Math.floor(W*DPR);canvas.height=Math.floor(H*DPR);
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
   }
-  for(var i=0;i<PARTICLE_COUNT;i++){
-    particles.push({x:random(0,W),y:random(0,H),vx:0,vy:0,size:random(1.2,2.8),color:particleColor(),opacity:random(.3,.7)})
+  function rnd(a,b){return Math.random()*(b-a)+a}
+  function dark(){return document.documentElement.getAttribute('data-theme')==='dark'}
+  function palette(){
+    if(dark())return [[129,140,248],[167,139,250],[99,102,241],[196,181,253],[226,232,255]];
+    return [[79,70,229],[99,102,241],[139,92,246],[124,58,237],[91,33,178]];
   }
+  function build(){
+    var count=Math.round(W*H/14000);
+    count=Math.max(60,Math.min(140,count));
+    if(reduce)count=42;
+    particles=[];
+    var pal=palette();
+    for(var i=0;i<count;i++){
+      var c=pal[Math.floor(Math.random()*pal.length)];
+      particles.push({
+        x:rnd(0,W),y:rnd(0,H),
+        vx:rnd(-0.25,0.25),vy:rnd(-0.25,0.25),
+        r:rnd(0.8,2.4),
+        b:c,
+        base:rnd(0.25,0.6),
+        amp:rnd(0.15,0.35),
+        ph:rnd(0,Math.PI*2),
+        tw:rnd(0.0008,0.0022)
+      });
+    }
+  }
+  size();build();
+  var rt;
+  window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){size();build()},180)});
   window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true});
-  window.addEventListener('mouseleave',function(){mouse.active=false});
-  var observer=new MutationObserver(function(){for(var i=0;i<PARTICLE_COUNT;i++){particles[i].color=particleColor()}});
-  observer.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-  function draw(){
+  document.addEventListener('mouseleave',function(){mouse.active=false;mouse.x=-9999;mouse.y=-9999});
+  window.addEventListener('touchmove',function(e){var t=e.touches[0];if(t){mouse.x=t.clientX;mouse.y=t.clientY;mouse.active=true}},{passive:true});
+  window.addEventListener('touchend',function(){mouse.active=false;mouse.x=-9999;mouse.y=-9999});
+  new MutationObserver(function(){
+    var pal=palette();
+    for(var i=0;i<particles.length;i++){
+      var c=pal[Math.floor(Math.random()*pal.length)];
+      particles[i].b=c;
+    }
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  function rgba(b,a){return 'rgba('+b[0]+','+b[1]+','+b[2]+','+a+')'}
+  var last=(typeof performance!=='undefined'?performance.now():Date.now());
+  function draw(now){
+    now=now||(typeof performance!=='undefined'?performance.now():Date.now());
+    var dt=now-last;last=now;
     ctx.clearRect(0,0,W,H);
-    for(var i=0;i<PARTICLE_COUNT;i++){
+    var n=particles.length;
+    for(var i=0;i<n;i++){
       var p=particles[i];
       if(mouse.active){
-        var dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<MAX_DIST){p.vx+=(dx/dist)*GRAVITY;p.vy+=(dy/dist)*GRAVITY}
+        var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<MOUSE_DIST&&d>0.1){
+          var f=(1-d/MOUSE_DIST)*GRAV;
+          p.vx+=(dx/d)*f;p.vy+=(dy/d)*f;
+        }
       }
-      p.vx*=FRICTION;p.vy*=FRICTION;
+      p.vx*=FR;p.vy*=FR;
       p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle=p.color+p.opacity+')';
-      ctx.fill();
-      var glow=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
-      glow.addColorStop(0,p.color+.15+')');
-      glow.addColorStop(1,'transparent');
-      ctx.beginPath();ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2);ctx.fillStyle=glow;ctx.fill()
+      if(p.x<-30)p.x=W+30;if(p.x>W+30)p.x=-30;
+      if(p.y<-30)p.y=H+30;if(p.y>H+30)p.y=-30;
+      p.ph+=p.tw*dt;
     }
-    requestAnimationFrame(draw)
+    ctx.lineWidth=1;
+    for(var a=0;a<n;a++){
+      var pa=particles[a];
+      for(var b=a+1;b<n;b++){
+        var pb=particles[b];
+        var dx=pa.x-pb.x,dy=pa.y-pb.y,d2=dx*dx+dy*dy;
+        if(d2<LINK_DIST*LINK_DIST){
+          var d=Math.sqrt(d2);
+          var al=(1-d/LINK_DIST)*0.16;
+          ctx.strokeStyle=rgba(pa.b,al);
+          ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();
+        }
+      }
+    }
+    if(mouse.active){
+      for(var m=0;m<n;m++){
+        var p=particles[m];
+        var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<MOUSE_DIST){
+          var al=(1-d/MOUSE_DIST)*0.28;
+          ctx.strokeStyle=rgba(p.b,al);
+          ctx.beginPath();ctx.moveTo(mouse.x,mouse.y);ctx.lineTo(p.x,p.y);ctx.stroke();
+        }
+      }
+    }
+    for(var k=0;k<n;k++){
+      var p=particles[k];
+      var tw=p.base+Math.sin(p.ph)*p.amp;
+      if(tw<0)tw=0;if(tw>0.95)tw=0.95;
+      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2.6);
+      g.addColorStop(0,rgba(p.b,tw*0.28));
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.6,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=rgba(p.b,tw);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+    }
+    requestAnimationFrame(draw);
   }
-  draw()
-})()
+  requestAnimationFrame(draw);
+})();
 </script>
 <%- js('js/jquery-3.6.4.min.js') %>
 
