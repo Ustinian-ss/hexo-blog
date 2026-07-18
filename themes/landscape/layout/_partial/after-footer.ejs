@@ -1,4 +1,4 @@
-<% if (theme.disqus_shortname){ %>
+﻿<% if (theme.disqus_shortname){ %>
 <script>
   var disqus_shortname = '<%= theme.disqus_shortname %>';
   <% if (page.permalink){ %>
@@ -54,10 +54,10 @@
       <button class="search-close"><i class="fas fa-times"></i></button>
     </div>
     <div class="search-input-wrap">
-      <input type="text" class="search-input" placeholder="输入关键词搜索...">
+      <input type="text" class="search-input" placeholder="输入关键词搜�?..">
     </div>
     <div class="search-results"></div>
-    <div class="search-empty">未找到相关内容</div>
+    <div class="search-empty">未找到相关内�?/div>
   </div>
 </div>
 <script>
@@ -126,7 +126,7 @@
       btn.addEventListener('click',function(){
         var code=pre.querySelector('code')||pre;
         navigator.clipboard.writeText(code.textContent).then(function(){
-          btn.innerHTML='<i class="fas fa-check"></i> 已复制';
+          btn.innerHTML='<i class="fas fa-check"></i> 已复�?;
           btn.style.background='rgba(34,197,94,.2)';
           setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> 复制';btn.style.background=''},2000)
         }).catch(function(){
@@ -139,6 +139,56 @@
   })()
 </script>
 
+
+<script id="starfield-script">
+(function(){
+  var canvas = document.getElementById('starfield');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var W,H,particles=[],mouse={x:null,y:null,active:false};
+  var PARTICLE_COUNT=80,MAX_DIST=180,GRAVITY=.03,FRICTION=.96;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  function random(min,max){return Math.random()*(max-min)+min}
+  function isDark(){return document.documentElement.getAttribute('data-theme')==='dark'}
+  function particleColor(){
+    var dark=isDark();
+    var colors=dark?['rgba(129,140,248,','rgba(167,139,250,','rgba(99,102,241,']:['rgba(79,70,229,','rgba(99,102,241,','rgba(139,92,246,'];
+    return colors[Math.floor(Math.random()*colors.length)]
+  }
+  for(var i=0;i<PARTICLE_COUNT;i++){
+    particles.push({x:random(0,W),y:random(0,H),vx:0,vy:0,size:random(1.2,2.8),color:particleColor(),opacity:random(.3,.7)})
+  }
+  window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true});
+  window.addEventListener('mouseleave',function(){mouse.active=false});
+  var observer=new MutationObserver(function(){for(var i=0;i<PARTICLE_COUNT;i++){particles[i].color=particleColor()}});
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<PARTICLE_COUNT;i++){
+      var p=particles[i];
+      if(mouse.active){
+        var dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<MAX_DIST){p.vx+=(dx/dist)*GRAVITY;p.vy+=(dy/dist)*GRAVITY}
+      }
+      p.vx*=FRICTION;p.vy*=FRICTION;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=p.color+p.opacity+')';
+      ctx.fill();
+      var glow=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
+      glow.addColorStop(0,p.color+.15+')');
+      glow.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2);ctx.fillStyle=glow;ctx.fill()
+    }
+    requestAnimationFrame(draw)
+  }
+  draw()
+})()
+</script>
 <%- js('js/jquery-3.6.4.min.js') %>
 
 <% if (theme.fancybox){ %>
