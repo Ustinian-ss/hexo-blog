@@ -39,12 +39,19 @@
   })()
 </script>
 <script>
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      document.getElementById('loading-box').classList.add('loaded');
-      setTimeout(function(){var lb=document.getElementById('loading-box');if(lb)lb.remove()},700)
-    },400)
-  })
+  (function(){
+    var dismissed=false;
+    function dismiss(){
+      if(dismissed)return;dismissed=true;
+      var lb=document.getElementById('loading-box');
+      if(!lb)return;
+      lb.classList.add('loaded');
+      setTimeout(function(){if(lb&&lb.parentNode)lb.parentNode.removeChild(lb)},700);
+    }
+    if(document.readyState==='complete'){setTimeout(dismiss,400)}
+    else{window.addEventListener('load',function(){setTimeout(dismiss,400)})}
+    setTimeout(dismiss,3500);
+  })()
 </script>
 <div id="search-mask"></div>
 <div id="search-dialog">
@@ -54,11 +61,10 @@
       <button class="search-close"><i class="fas fa-times"></i></button>
     </div>
     <div class="search-input-wrap">
-      <input type="text" class="search-input" placeholder="输入关键词搜�?..">
+      <input type="text" class="search-input" placeholder="输入关键词搜索...">
     </div>
     <div class="search-results"></div>
-    <div class="search-empty">未找到相关内�?/div>
-  </div>
+    <div class="search-empty">未找到相关内容</div>
 </div>
 <script>
   (function(){
@@ -126,8 +132,7 @@
       btn.addEventListener('click',function(){
         var code=pre.querySelector('code')||pre;
         navigator.clipboard.writeText(code.textContent).then(function(){
-          btn.innerHTML='<i class="fas fa-check"></i> 已复�?;
-          btn.style.background='rgba(34,197,94,.2)';
+          btn.innerHTML='<i class="fas fa-check"></i> 已复制';btn.style.background='rgba(34,197,94,.2)';
           setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> 复制';btn.style.background=''},2000)
         }).catch(function(){
           btn.innerHTML='<i class="fas fa-times"></i> 失败';
@@ -148,7 +153,7 @@
   var ctx = canvas.getContext('2d');
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   var W=0,H=0,particles=[],mouse={x:-9999,y:-9999,active:false};
-  var LINK_DIST=120,MOUSE_DIST=200,GRAV=0.045,FR=0.94;
+  var LINK_DIST=140,MOUSE_DIST=260,GRAV=0.09,FR=0.90;
   function size(){
     W=window.innerWidth;H=window.innerHeight;
     canvas.width=Math.floor(W*DPR);canvas.height=Math.floor(H*DPR);
@@ -158,13 +163,13 @@
   function rnd(a,b){return Math.random()*(b-a)+a}
   function dark(){return document.documentElement.getAttribute('data-theme')==='dark'}
   function palette(){
-    if(dark())return [[129,140,248],[167,139,250],[99,102,241],[196,181,253],[226,232,255]];
-    return [[79,70,229],[99,102,241],[139,92,246],[124,58,237],[91,33,178]];
+    if(dark())return [[129,140,248],[167,139,250],[99,102,241],[196,181,253],[226,232,255],[244,244,255],[165,243,252],[255,255,255]];
+    return [[79,70,229],[124,58,237],[139,92,246],[168,85,247],[217,70,239],[99,102,241],[109,40,217],[56,189,248]];
   }
   function build(){
-    var count=Math.round(W*H/14000);
-    count=Math.max(60,Math.min(140,count));
-    if(reduce)count=42;
+    var count=Math.round(W*H/6500);
+    count=Math.max(140,Math.min(260,count));
+    if(reduce)count=64;
     particles=[];
     var pal=palette();
     for(var i=0;i<count;i++){
@@ -172,10 +177,10 @@
       particles.push({
         x:rnd(0,W),y:rnd(0,H),
         vx:rnd(-0.25,0.25),vy:rnd(-0.25,0.25),
-        r:rnd(0.8,2.4),
+        r:rnd(1.4,3.6),
         b:c,
-        base:rnd(0.25,0.6),
-        amp:rnd(0.15,0.35),
+        base:rnd(0.72,0.98),
+        amp:rnd(0.18,0.32),
         ph:rnd(0,Math.PI*2),
         tw:rnd(0.0008,0.0022)
       });
@@ -225,7 +230,7 @@
         var dx=pa.x-pb.x,dy=pa.y-pb.y,d2=dx*dx+dy*dy;
         if(d2<LINK_DIST*LINK_DIST){
           var d=Math.sqrt(d2);
-          var al=(1-d/LINK_DIST)*0.16;
+          var al=(1-d/LINK_DIST)*0.5;
           ctx.strokeStyle=rgba(pa.b,al);
           ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();
         }
@@ -236,7 +241,7 @@
         var p=particles[m];
         var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
         if(d<MOUSE_DIST){
-          var al=(1-d/MOUSE_DIST)*0.28;
+          ctx.lineWidth=1.6;var al=(1-d/MOUSE_DIST)*0.8;
           ctx.strokeStyle=rgba(p.b,al);
           ctx.beginPath();ctx.moveTo(mouse.x,mouse.y);ctx.lineTo(p.x,p.y);ctx.stroke();
         }
@@ -246,17 +251,19 @@
       var p=particles[k];
       var tw=p.base+Math.sin(p.ph)*p.amp;
       if(tw<0)tw=0;if(tw>0.95)tw=0.95;
-      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2.6);
-      g.addColorStop(0,rgba(p.b,tw*0.28));
+      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3.4);
+      g.addColorStop(0,rgba(p.b,Math.min(tw*0.95,0.95)));
+      g.addColorStop(0.5,rgba(p.b,tw*0.45));
       g.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=g;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.6,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*5,0,Math.PI*2);ctx.fill();
       ctx.fillStyle=rgba(p.b,tw);
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     }
+    ctx.lineWidth=1;
     requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+  draw(typeof performance!=="undefined"?performance.now():Date.now());
 })();
 </script>
 <%- js('js/jquery-3.6.4.min.js') %>
