@@ -152,9 +152,9 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ctx = canvas.getContext('2d');
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
-  var W=0,H=0,particles=[],mouse={x:-9999,y:-9999,active:false};
-  var LINK_DIST=140,MOUSE_DIST=260,GRAV=0.09,FR=0.90;
-  function size(){
+ var W=0,H=0,particles=[],mouse={x:-9999,y:-9999,active:false};
+  var LINK_DIST=140,MOUSE_DIST=180,GRAV=0.05,FR=0.90,REPEL_DIST=40,REPEL_F=0.10;
+ function size(){
     W=window.innerWidth;H=window.innerHeight;
     canvas.width=Math.floor(W*DPR);canvas.height=Math.floor(H*DPR);
     canvas.style.width=W+'px';canvas.style.height=H+'px';
@@ -211,10 +211,11 @@
       var p=particles[i];
       if(mouse.active){
         var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<MOUSE_DIST&&d>0.1){
-          var f=(1-d/MOUSE_DIST)*GRAV;
-          p.vx+=(dx/d)*f;p.vy+=(dy/d)*f;
-        }
+       if(d<MOUSE_DIST&&d>0.1){
+         var f=(1-d/MOUSE_DIST)*GRAV;
+          if(d<REPEL_DIST){f=-REPEL_F*(1-d/REPEL_DIST);}
+         p.vx+=(dx/d)*f;p.vy+=(dy/d)*f;
+       }
       }
       p.vx*=FR;p.vy*=FR;
       p.x+=p.vx;p.y+=p.vy;
@@ -229,9 +230,9 @@
         var pb=particles[b];
         var dx=pa.x-pb.x,dy=pa.y-pb.y,d2=dx*dx+dy*dy;
         if(d2<LINK_DIST*LINK_DIST){
-          var d=Math.sqrt(d2);
-          var al=(1-d/LINK_DIST)*0.5;
-          ctx.strokeStyle=rgba(pa.b,al);
+         var d=Math.sqrt(d2);
+          var al=(1-d/LINK_DIST)*0.32;
+         ctx.strokeStyle=rgba(pa.b,al);
           ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();
         }
       }
@@ -240,9 +241,9 @@
       for(var m=0;m<n;m++){
         var p=particles[m];
         var dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<MOUSE_DIST){
-          ctx.lineWidth=1.6;var al=(1-d/MOUSE_DIST)*0.8;
-          ctx.strokeStyle=rgba(p.b,al);
+       if(d<MOUSE_DIST){
+          ctx.lineWidth=1.0;var al=(1-d/MOUSE_DIST)*0.35;
+         ctx.strokeStyle=rgba(p.b,al);
           ctx.beginPath();ctx.moveTo(mouse.x,mouse.y);ctx.lineTo(p.x,p.y);ctx.stroke();
         }
       }
