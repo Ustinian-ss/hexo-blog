@@ -1,4 +1,4 @@
-Ôªø<% if (theme.disqus_shortname){ %>
+<% if (theme.disqus_shortname){ %>
 <script>
   var disqus_shortname = '<%= theme.disqus_shortname %>';
   <% if (page.permalink){ %>
@@ -14,10 +14,10 @@
 <% } %>
 <div id="rightside">
   <div id="rightside-inner">
-    <button id="darkmode-toggle" class="rightside-btn" title="ÂàáÊç¢Ê∑±Ëâ≤/ÊµÖËâ≤Ê®°Âºè" onclick="var h=document.documentElement;var t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);localStorage.setItem('theme',t);var m=document.querySelector('meta[name=\"theme-color\"]');if(m)m.setAttribute('content',t==='dark'?'#0b1120':'#f8f7f4')">
+    <button id="darkmode-toggle" class="rightside-btn" title="«–ªª…Ó…´/«≥…´ƒ£ Ω" onclick="var h=document.documentElement;var t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);localStorage.setItem('theme',t);var m=document.querySelector('meta[name=\"theme-color\"]');if(m)m.setAttribute('content',t==='dark'?'#0b1120':'#f8f7f4')">
       <i class="fas fa-adjust"></i>
     </button>
-    <button id="go-up" class="rightside-btn" title="ÂõûÂà∞È°∂ÈÉ®" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <button id="go-up" class="rightside-btn" title="ªÿµΩ∂•≤ø" onclick="window.scrollTo({top:0,behavior:'smooth'})">
       <i class="fas fa-arrow-up"></i>
     </button>
   </div>
@@ -57,14 +57,14 @@
 <div id="search-dialog">
   <div class="search-dialog-inner">
     <div class="search-header">
-      <span class="search-title"><i class="fas fa-search"></i> ÊêúÁ¥¢ÊñáÁ´†</span>
+      <span class="search-title"><i class="fas fa-search"></i> À—À˜Œƒ’¬</span>
       <button class="search-close"><i class="fas fa-times"></i></button>
     </div>
     <div class="search-input-wrap">
-      <input type="text" class="search-input" placeholder="ËæìÂÖ•ÂÖ≥ÈîÆËØçÊêúÁ¥¢...">
+      <input type="text" class="search-input" placeholder=" ‰»Îπÿº¸¥ À—À˜...">
     </div>
     <div class="search-results"></div>
-    <div class="search-empty">Êú™ÊâæÂà∞Áõ∏ÂÖ≥ÂÜÖÂÆπ</div>
+    <div class="search-empty">Œ¥’“µΩœ‡πÿƒ⁄»›</div>
 </div>
 <script>
   (function(){
@@ -128,15 +128,15 @@
     document.querySelectorAll('.article-entry pre').forEach(function(pre){
       var btn=document.createElement('button');
       btn.className='code-copy-btn';
-      btn.innerHTML='<i class="fas fa-copy"></i> Â§çÂà∂';
+      btn.innerHTML='<i class="fas fa-copy"></i> ∏¥÷∆';
       btn.addEventListener('click',function(){
         var code=pre.querySelector('code')||pre;
         navigator.clipboard.writeText(code.textContent).then(function(){
-          btn.innerHTML='<i class="fas fa-check"></i> Â∑≤Â§çÂà∂';btn.style.background='rgba(34,197,94,.2)';
-          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> Â§çÂà∂';btn.style.background=''},2000)
+          btn.innerHTML='<i class="fas fa-check"></i> “—∏¥÷∆';btn.style.background='rgba(34,197,94,.2)';
+          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> ∏¥÷∆';btn.style.background=''},2000)
         }).catch(function(){
-          btn.innerHTML='<i class="fas fa-times"></i> Â§±Ë¥•';
-          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> Â§çÂà∂'},2000)
+          btn.innerHTML='<i class="fas fa-times"></i>  ß∞‹';
+          setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i> ∏¥÷∆'},2000)
         })
       });
       pre.appendChild(btn)
@@ -152,8 +152,8 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ctx = canvas.getContext('2d');
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
- var W=0,H=0,particles=[],mouse={x:-9999,y:-9999,active:false};
- var LINK_DIST=140,MOUSE_DIST=180,GRAV=0.05,FR=0.90,REPEL_DIST=40,REPEL_F=0.10;
+ var W=0,H=0,particles=[];
+ var LINK_DIST=140,FR=0.90;
   var MOUSE_IDLE=500,mouseLastMove=0,nowFn=typeof performance!=='undefined'?performance.now.bind(performance):Date.now;
 function size(){
     W=window.innerWidth;H=window.innerHeight;
@@ -190,10 +190,10 @@ function size(){
   size();build();
   var rt;
   window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){size();build()},180)});
-  window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;mouseLastMove=nowFn()});
- document.addEventListener('mouseleave',function(){mouse.active=false;mouse.x=-9999;mouse.y=-9999});
-  window.addEventListener('touchmove',function(e){var t=e.touches[0];if(t){mouse.x=t.clientX;mouse.y=t.clientY;mouse.active=true;mouseLastMove=nowFn()}},{passive:true});
- window.addEventListener('touchend',function(){mouse.active=false;mouse.x=-9999;mouse.y=-9999});
+  
+ 
+  
+ 
   new MutationObserver(function(){
     var pal=palette();
     for(var i=0;i<particles.length;i++){
