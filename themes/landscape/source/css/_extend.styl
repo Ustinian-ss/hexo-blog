@@ -1,4 +1,4 @@
-$block
+﻿﻿$block
   background: var(--bg-surface)
   border: 1px solid var(--border-light)
   border-radius: var(--radius-md)
@@ -63,7 +63,7 @@ $line-numbers
 // Global body
 // ============================================================
 body
-  background: var(--bg)
+  background: transparent
   color: var(--text-primary)
   transition: background var(--transition-slow), color var(--transition-slow)
 
@@ -465,15 +465,15 @@ body
 #starfield
   position: fixed
   inset: 0
-  z-index: 998
+  z-index: 0
   pointer-events: none
   width: 100%
   height: 100%
-  opacity: .9
+  opacity: 1
   mix-blend-mode: normal
 
-[data-theme="dark"] #starfield
-  mix-blend-mode: screen
+#wrap
+  background: var(--bg-alpha)
 
 // ============================================================
 // Profile card (original home-shell)
@@ -881,89 +881,3 @@ pre
   &:hover .code-copy-btn
     opacity: 1
 
-// ============================================================
-// Sidebar profile card
-// ============================================================
-.card-profile
-  text-align: center
-  padding: 28px 20px
-
-.profile-avatar
-  margin-bottom: 14px
-
-.avatar-placeholder
-  width: 80px
-  height: 80px
-  border-radius: 50%
-  background: linear-gradient(135deg, var(--accent), #a78bfa)
-  color: #fff
-  display: inline-grid
-  place-items: center
-  font-size: 32px
-  box-shadow: 0 8px 24px rgba(79,70,229,.3)
-
-.profile-name
-  font-size: 22px
-  font-weight: 800
-  color: var(--text-primary)
-  margin-bottom: 6px
-
-.profile-desc
-  font-size: 14px
-  color: var(--text-muted)
-  line-height: 1.6
-  margin-bottom: 18px
-
-.profile-stats
-  display: flex
-  justify-content: center
-  gap: 12px
-  margin-bottom: 16px
-
-.profile-stat
-  min-width: 72px
-  padding: 10px 14px
-  border-radius: var(--radius-md)
-  background: var(--bg-elevated)
-  border: 1px solid var(--border)
-  text-align: center
-  text-decoration: none
-  transition: all var(--transition-fast)
-  &:hover
-    transform: translateY(-2px)
-    box-shadow: var(--shadow-sm)
-    border-color: var(--accent-border)
-  strong
-    display: block
-    font-size: 22px
-    font-weight: 800
-    color: var(--text-primary)
-    line-height: 1.2
-  span
-    display: block
-    margin-top: 2px
-    font-size: 11px
-    color: var(--text-muted)
-    font-weight: 500
-
-.profile-social
-  display: flex
-  justify-content: center
-  gap: 10px
-
-.profile-social-icon
-  display: inline-flex
-  align-items: center
-  justify-content: center
-  width: 36px
-  height: 36px
-  border-radius: var(--radius-full)
-  background: var(--bg-elevated)
-  color: var(--text-secondary)
-  text-decoration: none
-  font-size: 16px
-  transition: all var(--transition-fast)
-  &:hover
-    background: var(--accent)
-    color: #fff
-    transform: translateY(-2px)
